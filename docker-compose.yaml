@@ -1,0 +1,12 @@
+services:
+  axonserver:
+    image: axoniq/axonserver:2023.2.0
+    container_name: axonservers
+    restart: unless-stopped
+    ports:
+      - "8024:8024"
+      - "8124:8124"
+      - "8224:8224"
+    environment:
+      - AXONIQ_AXONSERVER_DEVMODE_ENABLED=true
+      - AXONIQ_AXONSERVER_ACCESSCONTROL_ENABLED=false
