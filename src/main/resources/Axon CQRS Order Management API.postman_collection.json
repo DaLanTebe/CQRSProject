@@ -1,0 +1,476 @@
+{
+  "info": {
+    "_postman_id": "8b0563de-ab7a-4f64-bcee-20c6c5ccc35e",
+    "name": "Axon CQRS Order Management API",
+    "description": "Полное тестирование CQRS с Event Sourcing на Spring Boot + Axon",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "45649394"
+  },
+  "item": [
+    {
+      "name": "🏠 Health Check & Diagnostics",
+      "item": [
+        {
+          "name": "1. Проверка здоровья приложения",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/actuator/health",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "actuator",
+                "health"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Проверка подключения к Axon",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/debug/axon",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "debug",
+                "axon"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 Команды (Write Side)",
+      "item": [
+        {
+          "name": "1. Создать заказ (CREATE)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"MacBook Pro 16\",\n  \"amount\": 2500.00,\n  \"customerId\": \"customer-001\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Подтвердить заказ (CONFIRM)",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": ""
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/orders/{{orderId}}/confirm",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "orders",
+                "{{orderId}}",
+                "confirm"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Отменить заказ (CANCEL)",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"reason\": \"Передумал покупать\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/orders/{{orderId}}/cancel",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "orders",
+                "{{orderId}}",
+                "cancel"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "4. Создать заказ с ошибкой (валидация)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"Test Product\",\n  \"amount\": -100.00,\n  \"customerId\": \"test-customer\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📖 Запросы (Read Side)",
+      "item": [
+        {
+          "name": "1. Получить заказ по ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/orders/{{orderId}}",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "orders",
+                "{{orderId}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "2. Получить все заказы клиента",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/orders?customerId=customer-001",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "customerId",
+                  "value": "customer-001"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "3. Проверить пустую БД",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/api/orders?customerId=non-existing",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "orders"
+              ],
+              "query": [
+                {
+                  "key": "customerId",
+                  "value": "non-existing"
+                }
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🎯 Полные сценарии (End-to-End)",
+      "item": [
+        {
+          "name": "Сценарий 1: Успешный жизненный цикл заказа",
+          "event": [
+            {
+              "listen": "prerequest",
+              "script": {
+                "exec": [
+                  "console.log('=== Сценарий 1: Полный цикл заказа ===');",
+                  "// Генерация уникального ID для теста",
+                  "const orderId = 'test-' + Date.now();",
+                  "pm.collectionVariables.set('orderId', orderId);",
+                  "console.log('Сгенерирован orderId: ' + orderId);"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productName\": \"iPhone 15 Pro\",\n  \"amount\": 1299.99,\n  \"customerId\": \"john-doe-123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "http://localhost:8080/api/orders",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "api",
+                "orders"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🔧 Утилиты и мониторинг",
+      "item": [
+        {
+          "name": "1. Axon Server UI Dashboard",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8024",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8024"
+            },
+            "description": "Веб-интерфейс Axon Server (порт 8024)"
+          },
+          "response": []
+        },
+        {
+          "name": "2. H2 Database Console",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/h2-console",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "h2-console"
+              ]
+            },
+            "description": "Встроенная консоль H2 БД (логин: sa, пароль: пусто)"
+          },
+          "response": []
+        },
+        {
+          "name": "3. Проверить метрики Spring Boot",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8080/actuator/metrics",
+              "protocol": "http",
+              "host": [
+                "localhost"
+              ],
+              "port": "8080",
+              "path": [
+                "actuator",
+                "metrics"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Глобальная предварительная настройка",
+          "console.log('=== Axon CQRS Тестирование ===');",
+          "console.log('Время: ' + new Date().toISOString());",
+          "",
+          "// Установка переменных по умолчанию",
+          "if (!pm.collectionVariables.get('orderId')) {",
+          "    pm.collectionVariables.set('orderId', 'test-order-001');",
+          "}",
+          "",
+          "// Базовая авторизация если нужно",
+          "// pm.request.headers.add({",
+          "//     key: 'Authorization',",
+          "//     value: 'Bearer ' + pm.collectionVariables.get('token')",
+          "// });"
+        ],
+        "type": "text/javascript"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "// Общие тесты для всех запросов",
+          "pm.test('Статус ответа успешный', function() {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202, 204]);",
+          "});",
+          "",
+          "pm.test('Ответ содержит корректный Content-Type', function() {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});",
+          "",
+          "// Для POST запросов проверяем наличие orderId",
+          "if (pm.request.method === 'POST' && pm.request.url.toString().includes('/orders')) {",
+          "    pm.test('Ответ содержит orderId', function() {",
+          "        var jsonData = pm.response.json();",
+          "        pm.expect(jsonData.orderId).to.not.be.empty;",
+          "        ",
+          "        // Сохраняем orderId для последующих запросов",
+          "        pm.collectionVariables.set('orderId', jsonData.orderId);",
+          "        console.log('Сохранён orderId: ' + jsonData.orderId);",
+          "    });",
+          "}",
+          "",
+          "// Для GET запросов проверяем структуру данных",
+          "if (pm.request.method === 'GET' && pm.request.url.toString().includes('/orders')) {",
+          "    pm.test('Ответ имеет правильную структуру', function() {",
+          "        var jsonData = pm.response.json();",
+          "        ",
+          "        if (Array.isArray(jsonData)) {",
+          "            // Это список заказов",
+          "            pm.expect(jsonData).to.be.an('array');",
+          "            if (jsonData.length > 0) {",
+          "                pm.expect(jsonData[0]).to.have.keys([",
+          "                    'orderId', 'productName', 'amount', 'customerId', 'status'",
+          "                ]);",
+          "            }",
+          "        } else {",
+          "            // Это один заказ",
+          "            pm.expect(jsonData).to.have.keys([",
+          "                'orderId', 'productName', 'amount', 'customerId', 'status'",
+          "            ]);",
+          "        }",
+          "    });",
+          "}"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "orderId",
+      "value": "test-order-001",
+      "type": "string"
+    },
+    {
+      "key": "customerId",
+      "value": "customer-001",
+      "type": "string"
+    }
+  ]
+}
